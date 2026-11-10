@@ -1,0 +1,8 @@
+# Configuración local (credenciales FTP): nunca versionar
+.env
+
+# Entornos / artefactos
+.venv/
+node_modules/
+*.log
+.DS_Store

@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VULCANO · Work made by hand — BRISECOM</title>
+<meta name="description" content="VULCANO is the seal of BRISECOM's craft work. Anyone can own the tool. Time and judgement, no.">
+<meta property="og:title" content="VULCANO · Work made by hand">
+<meta property="og:description" content="We are not a report factory. We are the workshop.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vulcano.brisecom.org/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --negro: #0a0605;
+    --negro-2: #120b09;
+    --brasa: #e8420b;
+    --brasa-clara: #ff6a2b;
+    --oro: #d9a441;
+    --oro-claro: #f0c96b;
+    --hierro: #3a2a24;
+    --texto: #e8dcd4;
+    --texto-tenue: #9a8478;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--negro);
+    color: var(--texto);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(232,66,11,0.12), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(217,164,65,0.06), transparent 70%);
+  }
+
+  .lava-line {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    z-index: 100;
+    background: linear-gradient(90deg, transparent, var(--brasa), var(--oro), var(--brasa), transparent);
+    background-size: 200% 100%;
+    animation: lavaFlow 6s linear infinite;
+    box-shadow: 0 0 12px rgba(232,66,11,0.8), 0 0 30px rgba(232,66,11,0.4);
+  }
+
+  @keyframes lavaFlow {
+    0% { background-position: 0% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* ===== BARRA DE TRADUCCIÓN ===== */
+  .topbar {
+    position: fixed;
+    top: 2px;
+    right: 0;
+    z-index: 200;
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .gt-widget-wrap { display: inline-flex; align-items: center; gap: .35rem; }
+  .gt-widget-wrap .goog-te-gadget {
+    font-family: 'Inter', sans-serif !important;
+    font-size: .72rem !important;
+    color: #9a8478 !important;
+  }
+  .gt-widget-wrap .goog-te-gadget-simple {
+    background: rgba(18,11,9,.9) !important;
+    border: 1px solid var(--hierro) !important;
+    border-radius: 999px !important;
+    padding: .2rem .6rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: .3rem;
+  }
+  .gt-widget-wrap .goog-te-gadget-icon { display: none !important; }
+  .gt-widget-wrap .goog-te-gadget-simple .goog-te-menu-value { color: var(--oro-claro) !important; font-weight: 500 !important; }
+  .gt-widget-wrap .goog-te-gadget-simple .goog-te-menu-value span { color: var(--oro-claro) !important; }
+
+  /* Ocultar la barra superior que Google inyecta */
+  body { top: 0 !important; }
+  .skiptranslate iframe.goog-te-banner-frame { display: none !important; }
+  #goog-gt-tt { display: none !important; }
+  .goog-te-balloon-frame { display: none !important; }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  header {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 80px 28px;
+  }
+
+  .fragua {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(circle at 50% 55%, rgba(232,66,11,0.30) 0%, rgba(232,66,11,0.08) 28%, transparent 55%);
+    animation: breathe 7s ease-in-out infinite;
+  }
+
+  @keyframes breathe {
+    0%, 100% { opacity: .55; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.06); }
+  }
+
+  header > * { position: relative; z-index: 2; }
+
+  .marca-pequena {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .72rem;
+    letter-spacing: .42em;
+    text-transform: uppercase;
+    color: var(--oro);
+    opacity: .8;
+    margin-bottom: 34px;
+  }
+
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-weight: 900;
+    font-size: clamp(3.2rem, 13vw, 9rem);
+    letter-spacing: .1em;
+    line-height: .95;
+    background: linear-gradient(175deg, #fff 0%, var(--oro-claro) 22%, var(--brasa) 62%, #7a1f04 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 42px rgba(232,66,11,0.55));
+    margin-bottom: 18px;
+  }
+
+  .subtitulo {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(.95rem, 2.4vw, 1.35rem);
+    letter-spacing: .34em;
+    text-transform: uppercase;
+    color: var(--texto-tenue);
+    margin-bottom: 46px;
+  }
+
+  .lema {
+    font-size: clamp(1.15rem, 3.2vw, 1.85rem);
+    font-weight: 300;
+    letter-spacing: .01em;
+    max-width: 640px;
+    color: var(--texto);
+  }
+
+  .lema strong {
+    font-weight: 600;
+    color: var(--brasa-clara);
+  }
+
+  .bajar {
+    margin-top: 64px;
+    width: 1px;
+    height: 68px;
+    background: linear-gradient(180deg, var(--brasa), transparent);
+    animation: caer 2.4s ease-in-out infinite;
+  }
+
+  @keyframes caer {
+    0%, 100% { opacity: .25; transform: scaleY(.6); transform-origin: top; }
+    50% { opacity: 1; transform: scaleY(1); transform-origin: top; }
+  }
+
+  section {
+    padding: 110px 0;
+    position: relative;
+  }
+
+  .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .74rem;
+    letter-spacing: .3em;
+    color: var(--brasa);
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  h2 {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 5vw, 2.9rem);
+    letter-spacing: .04em;
+    line-height: 1.2;
+    margin-bottom: 28px;
+    color: #fff;
+  }
+
+  h2 em {
+    font-style: normal;
+    color: var(--brasa-clara);
+  }
+
+  p {
+    font-size: 1.03rem;
+    max-width: 74ch;
+    color: var(--texto);
+    margin-bottom: 20px;
+  }
+
+  p.tenue { color: var(--texto-tenue); }
+
+  .frase {
+    border-left: 3px solid var(--brasa);
+    padding: 8px 0 8px 30px;
+    margin: 46px 0;
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.25rem, 3.4vw, 1.9rem);
+    line-height: 1.45;
+    color: #fff;
+  }
+
+  .frase span { color: var(--oro-claro); }
+
+  .mapa {
+    display: grid;
+    gap: 1px;
+    background: var(--hierro);
+    border: 1px solid var(--hierro);
+    margin-top: 46px;
+  }
+
+  .mapa > div {
+    background: var(--negro-2);
+    padding: 26px 30px;
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 20px;
+    align-items: baseline;
+    transition: background .3s;
+  }
+
+  .mapa > div:hover { background: #1a100c; }
+
+  .mapa .nombre {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    letter-spacing: .12em;
+    font-size: .95rem;
+    color: var(--oro);
+  }
+
+  .mapa .quien { color: var(--texto); font-size: .98rem; }
+  .mapa .quien b { color: #fff; font-weight: 600; }
+
+  .dos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 44px;
+    margin-top: 40px;
+  }
+
+  @media (max-width: 720px) {
+    .dos { grid-template-columns: 1fr; gap: 34px; }
+    .mapa > div { grid-template-columns: 1fr; gap: 6px; }
+  }
+
+  .dos h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.05rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+    padding-bottom: 12px;
+  }
+
+  .si h3 { color: var(--brasa-clara); border-bottom: 1px solid rgba(232,66,11,.35); }
+  .no h3 { color: var(--texto-tenue); border-bottom: 1px solid var(--hierro); }
+
+  .dos ul { list-style: none; }
+
+  .dos li {
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 15px;
+    font-size: .98rem;
+  }
+
+  .dos li::before {
+    position: absolute;
+    left: 0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .si li::before { content: '▸'; color: var(--brasa); }
+  .no li::before { content: '—'; color: var(--texto-tenue); }
+
+  .si li b { color: #fff; font-weight: 600; }
+
+  .golpes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    background: var(--hierro);
+    margin-top: 50px;
+    border: 1px solid var(--hierro);
+  }
+
+  .golpe {
+    background: var(--negro-2);
+    padding: 36px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .golpe::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--brasa);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .5s ease;
+  }
+
+  .golpe:hover::after { transform: scaleX(1); }
+
+  .golpe .n {
+    font-family: 'Cinzel', serif;
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: var(--hierro);
+    line-height: 1;
+    margin-bottom: 16px;
+    transition: color .4s;
+  }
+
+  .golpe:hover .n { color: var(--brasa); }
+
+  .golpe h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--oro-claro);
+    margin-bottom: 14px;
+  }
+
+  .golpe p {
+    font-size: .93rem;
+    color: var(--texto-tenue);
+    margin: 0;
+  }
+
+  .cierre {
+    text-align: center;
+    padding: 130px 0 150px;
+    border-top: 1px solid var(--hierro);
+  }
+
+  .cierre .grande {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: clamp(1.6rem, 5vw, 3rem);
+    line-height: 1.3;
+    color: #fff;
+    margin-bottom: 22px;
+  }
+
+  .cierre .grande span { color: var(--brasa-clara); }
+
+  .cierre .pie {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .76rem;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: var(--texto-tenue);
+    margin-top: 44px;
+  }
+
+  .cierre a {
+    color: var(--oro);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(217,164,65,.35);
+    transition: all .3s;
+  }
+
+  .cierre a:hover {
+    color: var(--oro-claro);
+    border-color: var(--oro-claro);
+  }
+
+  footer {
+    border-top: 1px solid var(--hierro);
+    padding: 40px 0;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .72rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: #5a4a42;
+  }
+
+  ::selection { background: var(--brasa); color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="lava-line"></div>
+
+<div class="topbar">
+  <div id="google-translate-widget" class="gt-widget-wrap" aria-label="Translate this page"></div>
+</div>
+
+<header>
+  <div class="fragua"></div>
+
+  <div class="marca-pequena">BRISECOM · The craft</div>
+
+  <h1>VULCANO</h1>
+
+  <div class="subtitulo">The workshop that forges</div>
+
+  <p class="lema">
+    We are not a report factory.<br>
+    <strong>We are the workshop.</strong>
+  </p>
+
+  <div class="bajar"></div>
+</header>
+
+<div class="wrap">
+
+  <section>
+    <span class="num">I</span>
+    <h2>Neptune commands. <em>Vulcan makes.</em></h2>
+
+    <p>
+      They are two different things and it is worth not confusing them.
+      <strong>NEPTUNO</strong> is the framework: it observes, controls, orders and
+      commands. <strong>VULCANO</strong> is the work: what is done by hand, line by
+      line.
+    </p>
+
+    <p class="tenue">
+      And it is not a forced metaphor. In the myth,
+      <strong style="color:var(--oro-claro)">Vulcan forged Neptune's trident</strong>.
+      The workshop makes the weapon. The god wields it.
+    </p>
+
+    <div class="mapa">
+      <div>
+        <span class="nombre">BRISECOM</span>
+        <span class="quien"><b>The company.</b> Signs and answers. The parent brand.</span>
+      </div>
+      <div>
+        <span class="nombre">NEPTUNO</span>
+        <span class="quien">The resilience framework. <b>Observes, orders and commands.</b></span>
+      </div>
+      <div>
+        <span class="nombre">VULCANO</span>
+        <span class="quien"><b>The work.</b> The forge. The craft.</span>
+      </div>
+      <div>
+        <span class="nombre">LAIA</span>
+        <span class="quien">The engine. <b>A tool</b>, not a god.</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="num">II</span>
+    <h2>What it <em>is</em></h2>
+
+    <div class="dos">
+      <div class="si">
+        <h3>Is</h3>
+        <ul>
+          <li><b>The seal that the work was done by hand.</b> A person signs it</li>
+          <li>The brand of <b>the services</b>: audit, deployment, integration</li>
+          <li><b>The craft:</b> method, workmanship, human judgement, line-by-line review</li>
+          <li>What the client writes on an invoice: <b>&ldquo;craft work&rdquo;</b></li>
+        </ul>
+      </div>
+
+      <div class="no">
+        <h3>Is not</h3>
+        <ul>
+          <li><b>It is not the network.</b> The network belongs to NEPTUNO</li>
+          <li><b>It is not a product.</b> It is the <b>how</b></li>
+          <li>It does not replace BRISECOM: it is <b>what BRISECOM does</b></li>
+          <li>It is not a brand that needs explaining in every meeting</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="num">III</span>
+    <h2>The argument <em>is not modesty</em></h2>
+
+    <p>
+      We use the same tools as anyone else. The good ones; the standard ones. There
+      is no secret in the steel.
+    </p>
+
+    <div class="frase">
+      What changes is what happens <span>after the tool.</span>
+    </div>
+
+    <p>
+      Someone reads every finding. Checks it. Discards it if it is a false alarm.
+      Looks at it again when it does not add up. And signs the report with their
+      name.
+    </p>
+
+    <p class="tenue">
+      Anyone can own the tool. <strong style="color:var(--oro-claro)">Time and
+      judgement, no.</strong> This is not a romantic stance: it is what you are
+      buying.
+    </p>
+  </section>
+
+  <section>
+    <span class="num">IV</span>
+    <h2>Four blows</h2>
+
+    <p class="tenue">The craft, in the order it is done.</p>
+
+    <div class="golpes">
+      <div class="golpe">
+        <div class="n">I</div>
+        <h4>Look</h4>
+        <p>With open eyes and no hurry. Before touching anything, you understand what is there.</p>
+      </div>
+      <div class="golpe">
+        <div class="n">II</div>
+        <h4>Doubt</h4>
+        <p>What looks like a finding may be noise. You check before writing it down.</p>
+      </div>
+      <div class="golpe">
+        <div class="n">III</div>
+        <h4>Discard</h4>
+        <p>Half of what comes out is worthless. Saying so is also part of the job.</p>
+      </div>
+      <div class="golpe">
+        <div class="n">IV</div>
+        <h4>Sign</h4>
+        <p>With a name and a surname. The one who answers is a person, not a logo.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cierre">
+    <div class="grande">
+      Made by hand.<br>
+      <span>Every line, checked.</span>
+    </div>
+
+    <p class="pie">
+      <a href="https://brisecom.org">brisecom.org</a>
+      &nbsp;·&nbsp;
+      <a href="mailto:ximenez.francisco@brisecom.org">write to us</a>
+    </p>
+  </section>
+
+</div>
+
+<footer>
+  BRISECOM SL · VULCANO · The work · Valencia
+</footer>
+
+<script>
+(function () {
+  var GT_KEY = "vulcano_gt_lang";
+
+  /* Limpieza defensiva: si la URL trae #googtrans(X|X) o la cookie apunta al
+     idioma nativo, se borra para que Google Translate no recargue en bucle. */
+  try {
+    var hashMatch = window.location.hash.match(/googtrans\(([^|]+)\|([^)]+)\)/);
+    if (hashMatch) {
+      var fromL = (hashMatch[1] || "").slice(0, 2).toLowerCase();
+      var toL = (hashMatch[2] || "").slice(0, 2).toLowerCase();
+      if (fromL === toL) {
+        var clean = window.location.href.replace(/#?googtrans\([^)]*\)/, "").replace(/#$/, "");
+        window.history.replaceState(null, "", clean);
+      }
+    }
+  } catch (e) {}
+
+  function googleTranslateElementInit() {
+    /* global google */
+    new google.translate.TranslateElement(
+      {
+        pageLanguage: "en",
+        includedLanguages: "en,es,ca,fr,de,it,pt,nl,ar,zh-CN,ja,ru",
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      },
+      "google-translate-widget"
+    );
+  }
+  window.googleTranslateElementInit = googleTranslateElementInit;
+
+  var s = document.createElement("script");
+  s.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+  s.async = true;
+  document.head.appendChild(s);
+
+  var observer = new MutationObserver(function () {
+    var sel = document.querySelector(".goog-te-combo");
+    if (sel && !sel.dataset.bound) {
+      sel.dataset.bound = "1";
+      sel.addEventListener("change", function () {
+        try {
+          if (sel.value) { localStorage.setItem(GT_KEY, sel.value); }
+          else { localStorage.removeItem(GT_KEY); }
+        } catch (e) {}
+      });
+    }
+  });
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
+
+</body>
+</html>
