@@ -177,6 +177,33 @@
   .centro .lema { margin-bottom: 0; }
   .centro .marca-pequena { margin-bottom: 0; }
 
+  /* El proscenio SÍ recibe clics: pulsar pausa/reanuda el vídeo */
+  .proscenio { pointer-events: auto; cursor: pointer; }
+
+  /* Indicador de pausa: aparece al pulsar */
+  .proscenio.pausado::after { box-shadow: inset 0 0 0 2px rgba(232,66,11,.55), inset 0 0 90px 30px rgba(10,6,5,.95); }
+  .proscenio .pausa-ico {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(.8);
+    z-index: 7;
+    width: 62px; height: 62px;
+    border-radius: 50%;
+    border: 1px solid rgba(240,201,107,.55);
+    background: rgba(10,6,5,.62);
+    backdrop-filter: blur(4px);
+    display: grid; place-items: center;
+    color: var(--oro-claro);
+    font-size: 20px;
+    opacity: 0;
+    transition: opacity .25s, transform .25s;
+    pointer-events: none;
+  }
+  .proscenio.pausado .pausa-ico {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
   .proscenio {
     position: relative;
     width: min(48vw, 680px);
@@ -669,6 +696,7 @@
           <source src="video/vulcano-divino.mp4" type="video/mp4">
         </video>
         <div class="fallback"></div>
+        <div class="pausa-ico" aria-hidden="true">❚❚</div>
         <button class="sonido" id="btnSonido" type="button"
                 aria-label="Activar el sonido de la fragua" title="Sonido de la fragua">
           <span class="ico-mudo" aria-hidden="true">🔇</span>
@@ -927,6 +955,102 @@
   setTimeout(function () {
     if (!v.videoWidth || v.readyState < 2) sinVideo();
   }, 4000);
+
+  pintar();
+})();
+
+/* =====================================================================
+   PAUSAR EL VÍDEO: al pulsarlo y al salir de pantalla
+   - Clic sobre el vídeo -> pausa / reanuda (con icono ❚❚)
+   - Scroll fuera de vista -> pausa (ahorra batería y datos)
+   - Vuelve a vista          -> reanuda SOLO si el visitante no lo pausó
+   ===================================================================== */
+(function () {
+  var v = document.getElementById('fraguaVideo');
+  var prox = document.getElementById('proscenio');
+  if (!v || !prox) return;
+
+  var userPaused = false;     // pausa manual del visitante
+  var inView = true;
+  var pausadoPorScroll = false;   // lo pausamos nosotros por scroll/pestaña
+
+  function pintar() {
+    // Solo mostramos el icono de pausa si la pausa es del VISITANTE.
+    // Una pausa por scroll o por pestaña oculta no debe pintar el icono.
+    prox.classList.toggle('pausado', userPaused);
+  }
+
+  // 1) CLIC: pausa / reanuda
+  prox.addEventListener('click', function (ev) {
+    // el botón de sonido gestiona su propio clic
+    if (ev.target.closest('#btnSonido')) return;
+    if (userPaused || v.paused) {
+      userPaused = false;
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+    } else {
+      userPaused = true;
+      v.pause();
+    }
+    pintar();
+  });
+
+  // 2) Teclado: espacio sobre el proscenio (accesibilidad)
+  prox.setAttribute('tabindex', '0');
+  prox.setAttribute('role', 'button');
+  prox.setAttribute('aria-label', 'Pausar o reanudar el vídeo de la fragua');
+  prox.addEventListener('keydown', function (ev) {
+    if (ev.key === ' ' || ev.key === 'Enter') {
+      ev.preventDefault();
+      prox.click();
+    }
+  });
+
+  // 3) SCROLL: pausa fuera de vista, reanuda al volver
+  var primeraVez = true;          // el primer callback solo mide, no actúa
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        inView = e.isIntersecting && e.intersectionRatio > 0.25;
+
+        if (primeraVez) { primeraVez = false; pintar(); return; }
+
+        if (!inView) {
+          if (!v.paused) { v.pause(); pausadoPorScroll = true; }
+          pintar();
+        } else if (pausadoPorScroll && !userPaused) {
+          var p = v.play();
+          if (p && p.catch) p.catch(function () {});
+          pausadoPorScroll = false;
+          pintar();
+        }
+      });
+    }, { threshold: [0, 0.25, 0.5] });
+    obs.observe(prox);
+  }
+
+  // 4) Pestaña oculta: pausa
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      if (!v.paused) { v.pause(); pausadoPorScroll = true; }
+    } else if (inView && pausadoPorScroll && !userPaused) {
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+      pausadoPorScroll = false;
+    }
+    pintar();
+  });
+
+  // 5) Arranque: si el navegador bloqueó el autoplay, reintentar al primer gesto
+  function intentarPlay() {
+    if (userPaused || !v.paused) return;
+    var p = v.play();
+    if (p && p.catch) p.catch(function () {});
+  }
+  intentarPlay();
+  ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) {
+    window.addEventListener(ev, intentarPlay, { passive: true });
+  });
 
   pintar();
 })();
