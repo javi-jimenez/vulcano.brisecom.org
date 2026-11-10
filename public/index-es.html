@@ -80,7 +80,8 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 80px 28px;
+    padding: 48px 28px;
+    overflow: hidden;
   }
 
   .fragua {
@@ -100,7 +101,8 @@
   header > * { position: relative; z-index: 2; }
 
   /* =========================================================
-     ESCENARIO: bajorrelieve romano + video en bucle en el centro
+     ESCENARIO: relieve romano a los lados, video en medio,
+     texto ARRIBA y ABAJO del video (nunca encima)
      ========================================================= */
   .escenario {
     position: absolute;
@@ -118,7 +120,6 @@
     position: relative;
     overflow: hidden;
     opacity: .55;
-    /* El relieve se dibuja con textura de piedra + talla */
     background-image:
       repeating-linear-gradient(
         90deg,
@@ -144,42 +145,63 @@
   .columna.izq::after  { background: linear-gradient(270deg, var(--negro) 0%, transparent 70%); }
   .columna.der::after  { background: linear-gradient(90deg,  var(--negro) 0%, transparent 70%); }
 
-  /* Las figuras talladas: SVG inline como máscara */
+  /* Las figuras talladas: SVG como textura de relieve */
   .columna .talla {
     position: absolute;
     inset: 0;
+    background-image: url("img/vulcano-talla-romana.svg");
     background-repeat: repeat-y;
-    background-position: center;
+    background-position: center top;
     background-size: 100% auto;
-    opacity: .22;
+    opacity: .55;
     mix-blend-mode: screen;
-    filter: contrast(1.2);
+    filter: contrast(1.3) brightness(.55) sepia(.4) hue-rotate(-12deg);
   }
 
-  /* ---- Centro: escenario del video ---- */
+  /* ---- Columna central: texto / video / texto ---- */
+  .centro {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 1.6vh, 22px);
+    padding: 24px clamp(4px, 1vw, 14px);
+    pointer-events: none;
+    max-height: 100%;
+  }
+
+  .centro h1 { margin-bottom: 0; }
+  .centro .subtitulo { margin-bottom: 0; }
+  .centro .lema { margin-bottom: 0; }
+  .centro .marca-pequena { margin-bottom: 0; }
+
   .proscenio {
     position: relative;
-    width: min(58vw, 760px);
-    align-self: center;
+    width: min(48vw, 680px);
     aspect-ratio: 16 / 9;
-    margin: 0 8px;
-    border: 1px solid rgba(217,164,65,.22);
+    border: 1px solid rgba(217,164,65,.28);
     box-shadow:
       0 0 0 1px rgba(10,6,5,.9),
-      0 0 60px 12px rgba(232,66,11,.14),
-      inset 0 0 80px rgba(10,6,5,.9);
+      0 0 70px 14px rgba(232,66,11,.16),
+      inset 0 0 90px rgba(10,6,5,.95);
     background: #000;
     overflow: hidden;
+    flex: 0 0 auto;
   }
 
-  .proscenio video,
-  .proscenio img.poster {
+  .proscenio video {
     position: absolute;
-    inset: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
     width: 100%;
     height: 100%;
+    min-width: 100%;
+    min-height: 100%;
     object-fit: cover;
     display: block;
+    z-index: 1;
+    background: #0a0605;
   }
 
   /* Viñeta que come los bordes del video */
@@ -188,6 +210,7 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
+    z-index: 4;
     box-shadow: inset 0 0 90px 30px rgba(10,6,5,.95);
   }
 
@@ -199,28 +222,120 @@
     height: 100%;
     pointer-events: none;
     z-index: 3;
-    border-top: 3px solid transparent;
-    border-bottom: 3px solid transparent;
     background:
-      linear-gradient(180deg, rgba(217,164,65,.5), transparent 12%),
-      linear-gradient(0deg,   rgba(217,164,65,.5), transparent 12%);
-    background-clip: padding-box;
+      linear-gradient(180deg, rgba(217,164,65,.45), transparent 11%),
+      linear-gradient(0deg,   rgba(217,164,65,.45), transparent 11%);
   }
 
-  /* Fallback: sin video (móvil / sin red) → degradado de fragua */
-  .proscenio .fallback {
+  /* Botón de sonido: discreto, sobre el vídeo */
+  .proscenio .sonido {
     position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(circle at 50% 78%, rgba(255,106,43,.35) 0%, transparent 55%),
-      linear-gradient(180deg, #0a0605, #1a0d07 70%, #2a1208);
+    right: 12px;
+    bottom: 12px;
+    z-index: 6;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid rgba(217,164,65,.35);
+    background: rgba(10,6,5,.72);
+    color: var(--oro-claro);
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
     display: grid;
     place-items: center;
+    backdrop-filter: blur(6px);
+    transition: all .3s;
+    pointer-events: auto;
+  }
+  .proscenio .sonido:hover {
+    border-color: var(--oro-claro);
+    background: rgba(232,66,11,.30);
+    transform: scale(1.08);
+  }
+  .proscenio .sonido .ico-son { display: none; }
+  .proscenio .sonido.activo .ico-mudo { display: none; }
+  .proscenio .sonido.activo .ico-son { display: inline; }
+  .proscenio .sonido.latido { animation: latido 2.4s ease-in-out infinite; }
+  @keyframes latido {
+    0%,100% { box-shadow: 0 0 0 0 rgba(232,66,11,.45); }
+    50%     { box-shadow: 0 0 0 8px rgba(232,66,11,0); }
   }
 
-  /* En móvil el escenario estorba: bajorrelieve fuera, video a lo ancho */
+  /* Fallback: SOLO si el vídeo falla (clase .sin-video en el proscenio) */
+  .proscenio .fallback { display: none; }
+  .proscenio.sin-video .fallback {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background:
+      radial-gradient(ellipse 55% 38% at 50% 88%, rgba(255,150,60,.75) 0%, rgba(232,66,11,.45) 26%, transparent 62%),
+      radial-gradient(ellipse 30% 22% at 50% 92%, rgba(255,220,150,.85) 0%, rgba(255,120,40,.4) 40%, transparent 70%),
+      radial-gradient(ellipse 110% 70% at 50% 120%, rgba(232,66,11,.22) 0%, transparent 65%),
+      linear-gradient(180deg, #0a0605 0%, #150a06 45%, #2b1207 78%, #4a1c08 100%);
+    animation: fraguaViva 5.5s ease-in-out infinite;
+  }
+
+  @keyframes fraguaViva {
+    0%, 100% { filter: brightness(.92) saturate(1); }
+    45%      { filter: brightness(1.18) saturate(1.15); }
+    70%      { filter: brightness(1.02) saturate(1.05); }
+  }
+
+  /* Brasas que suben (dos capas a distinta velocidad) */
+  .proscenio .fallback::before,
+  .proscenio .fallback::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(2px 2px at 18% 70%, rgba(255,180,90,.9), transparent 60%),
+      radial-gradient(1.5px 1.5px at 34% 82%, rgba(255,200,120,.8), transparent 60%),
+      radial-gradient(2px 2px at 52% 64%, rgba(255,150,60,.85), transparent 60%),
+      radial-gradient(1.5px 1.5px at 67% 78%, rgba(255,190,100,.8), transparent 60%),
+      radial-gradient(2px 2px at 81% 68%, rgba(255,160,70,.9), transparent 60%),
+      radial-gradient(1.5px 1.5px at 45% 88%, rgba(255,210,130,.7), transparent 60%),
+      radial-gradient(1.5px 1.5px at 74% 90%, rgba(255,170,80,.7), transparent 60%);
+    background-size: 100% 100%;
+    opacity: .55;
+    animation: brasas 9s linear infinite;
+  }
+
+  .proscenio .fallback::after {
+    animation-duration: 14s;
+    animation-delay: -5s;
+    opacity: .3;
+    transform: scale(1.4);
+  }
+
+  @keyframes brasas {
+    0%   { transform: translateY(8%)  scale(1);    opacity: .15; }
+    40%  { opacity: .6; }
+    100% { transform: translateY(-55%) scale(1.15); opacity: 0; }
+  }
+
+  /* En móvil el relieve estorba: solo texto + video a lo ancho */
   @media (max-width: 860px) {
-    .escenario { display: none; }
+    .escenario {
+      position: static;
+      display: flex;
+      flex-direction: column;
+      pointer-events: auto;
+    }
+    .columna { display: none; }
+    .centro { padding: 0; gap: 14px; }
+    .proscenio { width: min(92vw, 560px); }
+    header { justify-content: flex-start; padding-top: 48px; }
+    .bajar { display: none; }
+  }
+
+  /* Pantallas bajas: apretar la portada para que quepa */
+  @media (max-height: 760px) and (min-width: 861px) {
+    .proscenio { width: min(38vw, 520px); }
+    header h1 { font-size: clamp(2.6rem, 9vw, 5.5rem); }
+    .lema { font-size: clamp(1rem, 1.8vw, 1.25rem); }
+    .centro { gap: 8px; }
   }
 
   /* Accesibilidad: respeta "reducir movimiento" */
@@ -536,16 +651,41 @@
 <header>
   <div class="fragua"></div>
 
-  <div class="marca-pequena">BRISECOM · El oficio</div>
+  <!-- ===== ESCENARIO: relieve romano a los lados, video en medio ===== -->
+  <div class="escenario" aria-hidden="true">
+    <div class="columna izq"><div class="talla"></div></div>
 
-  <h1>VULCANO</h1>
+    <div class="centro">
+      <!-- ARRIBA del video -->
+      <div class="marca-pequena">BRISECOM · El oficio</div>
+      <h1>VULCANO</h1>
 
-  <div class="subtitulo">El taller que forja</div>
+      <!-- VIDEO EN BUCLE (con sonido de yunque al primer toque) -->
+      <div class="proscenio" id="proscenio">
+        <video id="fraguaVideo" autoplay muted loop playsinline preload="auto"
+               poster="img/portada.png"
+               aria-label="La fragua de Vulcano: yunque, martillo y vapor">
+          <source src="video/fragua.webm" type="video/webm">
+          <source src="video/fragua.mp4" type="video/mp4">
+        </video>
+        <div class="fallback"></div>
+        <button class="sonido" id="btnSonido" type="button"
+                aria-label="Activar el sonido de la fragua" title="Sonido de la fragua">
+          <span class="ico-mudo" aria-hidden="true">🔇</span>
+          <span class="ico-son" aria-hidden="true">🔊</span>
+        </button>
+      </div>
 
-  <p class="lema">
-    No somos una fábrica de informes.<br>
-    <strong>Somos el taller.</strong>
-  </p>
+      <!-- ABAJO del video -->
+      <div class="subtitulo">El taller que forja</div>
+      <p class="lema">
+        No somos una fábrica de informes.<br>
+        <strong>Somos el taller.</strong>
+      </p>
+    </div>
+
+    <div class="columna der"><div class="talla"></div></div>
+  </div>
 
   <div class="bajar"></div>
 </header>
@@ -686,6 +826,111 @@
 <footer>
   BRISECOM SL · VULCANO · El trabajo · Valencia
 </footer>
+
+<script>
+/* =====================================================================
+   SONIDO DE LA FRAGUA
+   Los navegadores bloquean el audio con autoplay. Estrategia:
+   1) El vídeo arranca MUDO (siempre funciona).
+   2) Al primer gesto del visitante (clic, tecla, scroll, toque) se
+      desmutea solo. El botón permite apagarlo y volver a encenderlo.
+   3) Se respeta la elección: si lo apaga, no se vuelve a encender solo.
+   ===================================================================== */
+(function () {
+  var v = document.getElementById('fraguaVideo');
+  var b = document.getElementById('btnSonido');
+  if (!v || !b) return;
+
+  var KEY = 'vulcano_sonido';
+  var userDecided = false;
+  var enabled = false;
+
+  // Estado guardado: si el visitante ya dijo "no", se respeta.
+  try {
+    if (localStorage.getItem(KEY) === 'off') {
+      userDecided = true;
+      enabled = false;
+    }
+  } catch (e) {}
+
+  function pintar() {
+    b.classList.toggle('activo', enabled);
+    b.classList.toggle('latido', !enabled && !userDecided);
+    b.setAttribute('aria-label',
+      enabled ? 'Silenciar la fragua' : 'Activar el sonido de la fragua');
+    b.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+  }
+
+  function encender() {
+    if (enabled) return;
+    v.muted = false;
+    v.volume = 0.55;           // discreto: es ambiente, no protagonista
+    var p = v.play();
+    if (p && p.catch) p.catch(function () { v.muted = true; enabled = false; pintar(); });
+    enabled = true;
+    pintar();
+  }
+
+  function apagar() {
+    v.muted = true;
+    enabled = false;
+    pintar();
+    try { localStorage.setItem(KEY, 'off'); } catch (e) {}
+  }
+
+  // Botón: alterna y recuerda
+  b.addEventListener('click', function (ev) {
+    ev.stopPropagation();
+    userDecided = true;
+    if (enabled) { apagar(); }
+    else {
+      try { localStorage.setItem(KEY, 'on'); } catch (e) {}
+      encender();
+    }
+  });
+
+  // Primer gesto en cualquier parte: enciende solo (si no lo ha vetado)
+  function primerGesto() {
+    if (userDecided) return;
+    var guardado = null;
+    try { guardado = localStorage.getItem(KEY); } catch (e) {}
+    if (guardado === 'off') return;
+    encender();
+    quitar();
+  }
+
+  function quitar() {
+    ['click', 'keydown', 'touchstart', 'scroll', 'pointerdown'].forEach(function (e) {
+      window.removeEventListener(e, primerGesto);
+    });
+  }
+
+  ['click', 'keydown', 'touchstart', 'scroll', 'pointerdown'].forEach(function (e) {
+    window.addEventListener(e, primerGesto, { passive: true });
+  });
+
+  // Si el vídeo no carga (404 o códec no soportado) → fallback CSS
+  var prox = document.getElementById('proscenio');
+  function sinVideo() {
+    if (prox) prox.classList.add('sin-video');
+    if (b) b.style.display = 'none';
+  }
+  v.addEventListener('error', sinVideo);
+  var sources = v.querySelectorAll('source');
+  for (var i = 0; i < sources.length; i++) {
+    sources[i].addEventListener('error', function () {
+      // solo si ese era el último recurso
+      if (sources[sources.length - 1] === this) sinVideo();
+    });
+  }
+  // Red de seguridad: si a los 4 s no hay ni un píxel de vídeo, fallback
+  setTimeout(function () {
+    if (!v.videoWidth || v.readyState < 2) sinVideo();
+  }, 4000);
+
+  pintar();
+})();
+</script>
 
 </body>
 </html>
